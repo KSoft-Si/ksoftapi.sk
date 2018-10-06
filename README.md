@@ -1,7 +1,5 @@
 # ksoftapi.sk
-A wrapper for api.ksoft.si made in Skript. Reqn and Skript-Json add-ons are required.
-
-## A wrapper for K.Soft API made in Skript.
+A wrapper for api.ksoft.si made in Skript.
 
 ## Required Plugins:
 
@@ -18,6 +16,4 @@ Created by GamingGeek and EnderDev
 Acknowledgements: K.Soft API & NANI
 
 Big thanks to them! :heart:
-
-Written in Skript with love
 
