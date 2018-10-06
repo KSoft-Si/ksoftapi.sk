@@ -11,6 +11,10 @@ A wrapper for api.ksoft.si made in Skript. Reqn and Skript-Json add-ons are requ
 * [Optional] Vixio (Discord Support) - https://github.com/iBlitzkriegi/Vixio/releases
 
 Created by GamingGeek and EnderDev
+
 Acknowledgements: K.Soft API & NANI
-Big thanks to them! <3
+
+Big thanks to them! :heart:
+
 Written in Skript with love
+
