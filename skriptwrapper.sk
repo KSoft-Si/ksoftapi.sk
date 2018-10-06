@@ -9,8 +9,8 @@ function url(url: text) :: text:
 	return {_url}
 	
 #---------------------------------------------------------------------------------------------------
-#									    Random-Meme
-#					This is the section that contains all random-meme code
+#				            Random-Meme
+#		         This is the section that contains all random-meme code
 #----------------------------------------------------------------------------------------------------
 	
 effect (get|generate) random meme:
