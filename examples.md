@@ -15,3 +15,5 @@ discord command !meme:
 		reply with last created embed
 ```
 
+* Vixio - https://github.com/iBlitzkriegi/Vixio
+
