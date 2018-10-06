@@ -17,3 +17,5 @@ discord command !meme:
 
 * Vixio - https://github.com/iBlitzkriegi/Vixio
 
+This example is using Vixio 2 pre release 2, it will display an embed with a title, the subreddits, votes and the image.
+
