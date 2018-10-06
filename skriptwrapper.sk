@@ -27,28 +27,29 @@ effect (get|generate) random meme:
 		set {randmeme::comments} to {_meme::comments}
 		set {randmeme::nsfw} to {_meme::nsfw}
 		set {randmeme::author} to {_meme::author}
+		set {lastrandmemeid} to {_id}
 		
 expression last randmeme (img|image): # returns the image url. handy for using in discord embeds (Discord integration reuires Vixio)
 	get:
 		return {randmeme::img}
 		
-expression last randmeme (title|name):
+expression last randmeme (title|name): # returns the meme title. #
 	get:
 		return {randmeme::title}
 		
-expression last randmeme (url|link):
+expression last randmeme (url|link): # source of the post. always starts with https://reddit.com #
 	get:
 		return {randmeme::source}
 		
-expression last randmeme (subreddit|reddit):
+expression last randmeme (subreddit|reddit): # returns the subreddits of the post #
 	get:
 		return {randmeme::subreddit}
 		
-expression last randmeme (upvotes|likes):
+expression last randmeme (upvotes|likes): # returns the upvotes/likes of a post #
 	get:
 		return {randmeme::upvotes}
 		
-expression last randmeme (downvotes|dislikes):
+expression last randmeme (downvotes|dislikes): # returns the downvotes/dislikes #
 	get:
 		return {randmeme::downvotes}
 		
