@@ -12,5 +12,6 @@ discord command !meme:
 			add field named "Votes" with value "Upvotes: %last randmeme upvotes% | Downvotes: %last randmeme downvotes%" to fields of embed
 			set the image of embed to "%last randmeme img%"
 			set the timestamp of embed to now
-		reply with last created embed```
+		reply with last created embed
+```
 
