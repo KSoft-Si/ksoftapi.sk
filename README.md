@@ -10,7 +10,7 @@ A wrapper for api.ksoft.si made in Skript. Reqn and Skript-Json add-ons are requ
 * Skript (Version 1.9/1.13 reccomended) - https://github.com/SkriptLang/Skript/releases
 * [Optional] Vixio (Discord Support) - https://github.com/iBlitzkriegi/Vixio/releases
 
-# CREATED BY GAMINGGEEK AND ENDER #
-# Acknowledgements: K.Soft API & NANI #
-# Big thanks to them! <3 #
-# Written in Skript with love #
+Created by GamingGeek and EnderDev
+Acknowledgements: K.Soft API & NANI
+Big thanks to them! <3
+Written in Skript with love
