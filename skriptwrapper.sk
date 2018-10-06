@@ -1,0 +1,66 @@
+CREATED BY GAMINGGEEK AND ENDER #
+# Acknowledgements: K.Soft API & NANI #
+
+options:
+	token: token XXXXXXXXXXXXXXXXXXXXXXXXXX # <-- You would enter your K.Soft API token here. You can get one by submitting an application to: https://api.ksoft.si/dashboard/ #
+
+function url(url: text) :: text:
+	replace all "§" with "&" in {_url}
+	return {_url}
+	
+#---------------------------------------------------------------------------------------------------
+#									    Random-Meme
+#					This is the section that contains all random-meme code
+#----------------------------------------------------------------------------------------------------
+	
+effect (get|generate) random meme:
+	trigger:
+		delete {randmeme::*}
+		send a request to url("https://api.ksoft.si/meme/random-meme") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
+		map json last response's body to {_meme::*}
+		set {randmeme::img} to {_meme::image_url}
+		set {randmeme::title} to {_meme::title}
+		set {randmeme::source} to {_meme::source}
+		set {randmeme::subreddit} to {_meme::subreddit}
+		set {randmeme::upvotes} to {_meme::upvotes}
+		set {randmeme::downvotes} to {_meme::downvotes}
+		set {randmeme::comments} to {_meme::comments}
+		set {randmeme::nsfw} to {_meme::nsfw}
+		set {randmeme::author} to {_meme::author}
+		set {lastrandmemeid} to {_id}
+		
+expression last randmeme (img|image): # returns the image url. handy for using in discord embeds (Discord integration reuires Vixio)
+	get:
+		return {randmeme::img}
+		
+expression last randmeme (title|name):
+	get:
+		return {randmeme::title}
+		
+expression last randmeme (url|link):
+	get:
+		return {randmeme::source}
+		
+expression last randmeme (subreddit|reddit):
+	get:
+		return {randmeme::subreddit}
+		
+expression last randmeme (upvotes|likes):
+	get:
+		return {randmeme::upvotes}
+		
+expression last randmeme (downvotes|dislikes):
+	get:
+		return {randmeme::downvotes}
+		
+expression last randmeme (comments|replies): # returns the amount of comments, not the comments
+	get:
+		return {randmeme::comments}
+		
+expression last randmeme (nsfw state|nsfw|nsfw status): # returns a boolean (true/false), not a string ("true"/"false")
+	get:
+		return {randmeme::nsfw}
+		
+expression last randmeme (author|user): # returns the author of the post in the form of "u/username"
+	get:
+		return {randmeme::author}
