@@ -21,4 +21,4 @@ This example is using Vixio 2 pre release 2, it will display an embed with a tit
 
 Thanks to GamingGeek for this example.
 
-If you wish to submit a example, please open a issue about it and we will consider adding it.
+If you wish to submit a example, please add it and create a pull request and we will take a look at it!
