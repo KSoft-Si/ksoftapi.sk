@@ -8,7 +8,7 @@ A wrapper for api.ksoft.si made in Skript.
 * Skript-Mirror - https://github.com/btk5h/skript-mirror/releases
 * SkUtilities - https://github.com/tim740/skUtilities/releases/tag/v0.9.2 (for unix to date conversions)
 
-# Skript download
+## Skript download
 * Skript (dev36+) - https://github.com/SkriptLang/Skript/releases/download/dev36/Skript.jar
 
 ## Optional Addons
