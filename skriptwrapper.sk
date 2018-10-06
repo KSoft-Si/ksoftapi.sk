@@ -27,7 +27,6 @@ effect (get|generate) random meme:
 		set {randmeme::comments} to {_meme::comments}
 		set {randmeme::nsfw} to {_meme::nsfw}
 		set {randmeme::author} to {_meme::author}
-		set {lastrandmemeid} to {_id}
 		
 expression last randmeme (img|image): # returns the image url. handy for using in discord embeds (Discord integration reuires Vixio)
 	get:
