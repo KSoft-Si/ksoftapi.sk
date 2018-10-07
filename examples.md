@@ -3,7 +3,7 @@
 ```
 discord command !meme:
 	trigger:
-		get random meme
+		get random meme # <-- Fetches a random meme from the API #
 		make embed:
 			set the author info of the embed to author named "%event-user%" with icon "%avatar of event-user%"
 			set title of embed to title with text "Did someone order a spicy meme?" and link "%last randmeme url%"
