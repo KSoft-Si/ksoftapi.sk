@@ -17,6 +17,10 @@ discord command !meme:
 
 * Vixio - https://github.com/iBlitzkriegi/Vixio
 
+This example is using Vixio 2 pre release 2, it will display an embed with a title, the subreddits, votes and the image.
+
+Thanks to GamingGeek for this example.
+
 # Search for Lyrics (Example uses Vixio 2 pre-2!)
 
 ```
@@ -28,8 +32,8 @@ discord command !lyrics <string>:
 
 * Vixio - https://github.com/iBlitzkriegi/Vixio
 
-This example is using Vixio 2 pre release 2, it will display an embed with a title, the subreddits, votes and the image.
+This example is using Vixio 2 pre release 2.
 
-Thanks to GamingGeek for this example.
+Thanks to Ender for this example.
 
-If you wish to submit a example, please add it and create a pull request and we will take a look at it!
+ ## If you wish to submit a example, please add it and create a pull request and we will take a look at it!
