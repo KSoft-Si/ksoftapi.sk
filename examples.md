@@ -17,6 +17,17 @@ discord command !meme:
 
 * Vixio - https://github.com/iBlitzkriegi/Vixio
 
+# Search for Lyrics (Example uses Vixio 2 pre-2!)
+
+```
+discord command !lyrics <string>:
+	trigger:
+		search lyrics for arg-1
+		WIP
+```
+
+* Vixio - https://github.com/iBlitzkriegi/Vixio
+
 This example is using Vixio 2 pre release 2, it will display an embed with a title, the subreddits, votes and the image.
 
 Thanks to GamingGeek for this example.
