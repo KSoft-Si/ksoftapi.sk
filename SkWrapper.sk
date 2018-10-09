@@ -3,6 +3,7 @@
 
 options:
 	token: token XXXXXXXXXXXXXXXXXXXXXXXXXX # <-- You would enter your K.Soft API token here. You can get one by submitting an application to: https://api.ksoft.si/dashboard/ #
+	lyricerror: No lyrics found for that search query!
 
 function url(url: text) :: text:
 	replace all "§" with "&" in {_url}
@@ -63,3 +64,121 @@ expression last randmeme (nsfw state|nsfw|nsfw status): # returns a boolean (tru
 expression last randmeme (author|user): # returns the author of the post in the form of "u/username"
 	get:
 		return {randmeme::author}
+		
+#---------------------------------------------------------------------------------------------------
+#				            Lyric Search
+#		         This is the section that contains all lyric search code
+#----------------------------------------------------------------------------------------------------
+	
+effect (search|find) lyrics for %string% with text only %boolean%[ and limit results to %integer%]:
+	trigger:
+		delete {lastlyric::*}
+		if expression-2 is false:
+			set {_tonly} to false
+		if expression-2 is true:
+			set {_tonly} to true
+		if expression 3 is not set:
+			set {_limit} to 10
+		else:
+			set {_limit} to expression-3
+		send a request to url("https://api.ksoft.si/lyrics/search?q=%expression-1%&text_only=%{_tonly}%&limit=%{_limit}%") with headers "User-Agent: Skript", "Accept: application/json" and "Authorization: {@token}"
+		map json last response's body to {_lyrics::*}
+		set {lastlyric::total} to {_lyrics::total}
+		set {lastlyric::took} to {_lyrics::took}
+		loop {_limit} times:
+			set {lastlyric::artist::%loop-value%} to {_lyrics::data::%loop-value%::artist}
+			set {lastlyric::artist_id::%loop-value%} to {_lyrics::data::%loop-value%::artist_id}
+			set {lastlyric::album::%loop-value%} to {_lyrics::data::%loop-value%::album}
+			set {lastlyric::album_id::%loop-value%} to {_lyrics::data::%loop-value%::album_ids}
+			set {lastlyric::album_year::%loop-value%} to {_lyrics::data::%loop-value%::album_year}
+			set {lastlyric::tracktitle::%loop-value%} to {_lyrics::data::%loop-value%::name}
+			set {lastlyric::tracklyrics::%loop-value%} to {_lyrics::data::%loop-value%::lyrics}
+			set {lastlyric::search_query::%loop-value%} to {_lyrics::data::%loop-value%::search_str}
+			set {lastlyric::trackid::%loop-value%} to {_lyrics::data::%loop-value%::id}
+			set {lastlyric::query_score::%loop-value%} to {_lyrics::data::%loop-value%::search_score}
+			
+# If "for result n" is not specified, it will always return the first result in the search no matter what.
+
+expression last lyric error: # returns the lyric query error.
+	get:
+		if {lastlyric::total} is 0:
+			return "{@lyricerror}"
+			
+expression last lyric results: # returns the amount of songs in the API.
+	get:
+		return {lastlyric::total}
+			
+expression last lyric time: # returns the time taken to make the request.
+	get:
+		return {lastlyric::took}
+		
+expression last lyric (artist|singer)[ for result %integer%]: # returns the last artist for the specified song result.
+	get:
+		if expression-1 is set:
+			return {lastlyrics::artist::%expression-1%}
+		else:
+			return {lastlyrics::artist::1}
+		
+expression last lyric (artist_id|singer_id)[ for result %integer%]: # returns the artist's ID on lyrics.wikia.com. #
+	get:
+		if expression-1 is set:
+			return {lastlyric::artist_id::%expression-1%}
+		else:
+			return {lastlyric::artist_id::1}
+		
+expression last lyric album[ for result %integer%]: # returns the album for the specified song result. #
+	get:
+		if expression-1 is set:
+			return {lastlyric::album::%expression-1%}
+		else:
+			return {lastlyric::album::1}
+		
+expression last lyric album id[ for result %integer%]: # returns the results's album ID. #
+	get:
+		if expression-1 is set:
+			return {lastlyric::album_id::%expression-1%}
+		else:
+			return {lastlyric::album_id::1}
+		
+expression last lyric album year[ for result %integer%]: # returns the results's album year. #
+	get:
+		if expression-1 is set:
+			return {lastlyric::album_id::%expression-1%}
+		else:
+			return {lastlyric::album_id::1}
+		
+expression last lyric (title|track name)[ for result %integer%]: # returns the results's track title. #
+	get:
+		if expression-1 is set:
+			return {lastlyric::tracktitle::%loop-value%}
+		else:
+			return {lastlyric::tracktitle::1}
+
+expression last lyrics[ for result %integer%]: # returns the results's track lyrics. # Note to Vixio users: If the lyrics are too long and do not fit inside your embed, try putting it inside your description. #
+	get:
+		if expression-1 is set:
+			return {lastlyric::tracklyrics::%loop-value%}
+		else:
+			return {lastlyric::tracklyrics::1}
+		
+expression last lyric (query|search|result)[ for result %integer%]: # returns the results's search query for the lyrics. #
+	get:
+		if expression-1 is set:
+			return {lastlyric::search_query::%loop-value%}
+		else:
+			return {lastlyric::search_query::1}
+		
+expression last lyric track id[ for result %integer%]: # returns the results's track ID. #
+	get:
+		if expression-1 is set:
+			return {lastlyric::trackid::%loop-value%}
+		else:
+			return {lastlyric::trackid::1}
+			
+expression last lyric (score|query score)[ for result %integer%]: # returns the results's query score. #
+	get:
+		if expression-1 is set:
+			return {lastlyric::query_score::%loop-value%}
+		else:
+			return {lastlyric::query_score::1}
+			
