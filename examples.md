@@ -26,13 +26,20 @@ Thanks to GamingGeek for this example.
 ```
 discord command !lyrics <string>:
 	trigger:
-		search lyrics for arg-1
-		WIP
+		search lyrics for arg-1 with text only false
+		make embed:
+			set the author info of the embed to author named "I found this for: %last lyric title%" with icon "%avatar of event-user%"
+			set the description of embed to "%last lyrics%"
+			add field named "Artist" with value "%last lyric artist%" to fields of embed
+			add field named "Album" with value "%last lyric album%" to fields of embed
+			add field named "Track Released" with value "%last lyric album year%" to fields of embed
+			set the timestamp of embed to now
+		reply with last created embed
 ```
 
 * Vixio - https://github.com/iBlitzkriegi/Vixio
 
-This example is using Vixio 2 pre release 2.
+This example is using Vixio 2 pre release 2. It searches for argument one, or whatever you type after !lyrics. In this case, it could be: Never Gonna Give you up. Text only will search only inside the lyrics if set to true, we don't want that so it's only searching titles and artists.
 
 Thanks to Ender for this example.
 
