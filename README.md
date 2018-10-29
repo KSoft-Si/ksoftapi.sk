@@ -1,5 +1,5 @@
 # 🍫 ksoftapi.sk
-A rapper for api.ksoft.si made in Skript.
+A wrapper for api.ksoft.si made in Skript.
 
 ## Required Plugins:
 
