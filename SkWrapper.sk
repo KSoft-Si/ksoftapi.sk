@@ -70,18 +70,20 @@ expression last randmeme (author|user): # returns the author of the post in the 
 #		         This is the section that contains all lyric search code
 #----------------------------------------------------------------------------------------------------
 	
-effect (search|find) lyrics for %string% with text only %boolean%[ and limit results to %integer%]:
+effect (search|find) lyrics for %string% with text only %boolean%[, clean up %boolean%][ and limit results to %integer%]:
 	trigger:
 		delete {lastlyric::*}
 		if expression-2 is false:
 			set {_tonly} to false
 		if expression-2 is true:
 			set {_tonly} to true
-		if expression 3 is not set:
+		if expression-3 is set:
+			set {_clean} to expression-3
+		if expression-4 is not set:
 			set {_limit} to 10
 		else:
 			set {_limit} to expression-3
-		send a request to url("https://api.ksoft.si/lyrics/search?q=%expression-1%&text_only=%{_tonly}%&limit=%{_limit}%") with headers "User-Agent: Skript", "Accept: application/json" and "Authorization: {@token}"
+		send a request to url("https://api.ksoft.si/lyrics/search?q=%expression-1%&text_only=%{_tonly}%&limit=%{_limit}%&clean_up=%{_clean}%") with headers "User-Agent: Skript", "Accept: application/json" and "Authorization: {@token}"
 		map json last response's body to {_lyrics::*}
 		set {lastlyric::total} to {_lyrics::total}
 		set {lastlyric::took} to {_lyrics::took}
