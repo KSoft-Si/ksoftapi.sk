@@ -189,7 +189,7 @@ expression last lyric (score|query score)[ for result %integer%]: # returns the 
 #		         This is the section that contains all subreddit meme code
 #----------------------------------------------------------------------------------------------------
 
-effect (get|generate) random meme from subreddit %string%[ with nsfw %boolean%][ (and|with) span %string%]: #Expression 3 (Span) should be "hour", "day", "week", "month" or "year" or excluded for all
+effect (get|generate) random meme from subreddit %string%[ with nsfw %boolean%][ (and|with) span %-string%]: #Expression 3 (Span) should be "hour", "day", "week", "month" or "year" or excluded for all
 	trigger:
 		delete {randreddit::*}
 		if expression-2 is not set:
