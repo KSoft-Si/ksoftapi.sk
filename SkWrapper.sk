@@ -247,3 +247,31 @@ expression last randreddit (nsfw state|nsfw|nsfw status): # returns a boolean (t
 expression last randreddit (author|user): # returns the author of the post in the form of "u/username"
 	get:
 		return {randreddit::author}
+
+#---------------------------------------------------------------------------------------------------
+#				            Other Image Related Requests
+#		         This is the section that contains all other image code
+#----------------------------------------------------------------------------------------------------
+
+effect get all image tags:
+	trigger:
+		send a request to url("https://api.ksoft.si/images/tags") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
+		map json last response's body to {_tags::*}
+		set {_tags} to join {_tags::tags} by ", "
+		return {_tags}
+
+effect get image from (id|snowflake) %string%:
+	trigger:
+		send a request to url("https://api.ksoft.si/images/image/%expr-1%") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
+		map json last response's body to {_image::*}
+		if last response's status code is 404:
+			return "Error: Image couldn't be found!"
+		else:
+			return {_image::url}
+
+effect get random cute (image|pic):
+	trigger:
+		send a request to url("https://api.ksoft.si/images/random-aww") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
+		map json last response's body to {_image::*}
+
+		return {_image::image_url}
