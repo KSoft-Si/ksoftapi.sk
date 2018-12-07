@@ -15,20 +15,6 @@ on load:
 	delete {ksofttags::*}
 	set {ksofttags::*} to join {_tags::tags::*} by ", "
 
-on skript load:
-	send a request to url("https://bot.ender.site/v4/latest/skwrapper") with headers "User-Agent: Skript" and "Content-Type: application/json"
-	map json last response's body to {_latest::*}
-	set {_ver} to "{@version}"
-	if {_ver} is {_latest::*}:
-		send "<red>An unexpected error occoured. The version was missing from your file." to console
-		send "<red>The latest release is %{_latest::*}%, but you are running %{_ver}%." to console
-		send "<red>Please re-download the lastest release from https://github.com/EnderDev/ksoftapi.sk/releases/" to console
-		execute console command "/stop"
-	if {_ver} is {_latest::*}:
-		send "<green>Successfully loaded SkWrapper" to console
-		send "<green>If you experience any issues, please report it on https://github.com/EnderDev/ksoftapi.sk/issues" to console
-
-
 #---------------------------------------------------------------------------------------------------
 #				            Random-Meme
 #		         This is the section that contains all random-meme code
