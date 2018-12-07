@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # <img src="https://twemoji.maxcdn.com/2/72x72/1f36b.png" width="41"> ksoftapi.sk
-=======
-# <img src="https://twemoji.maxcdn.com/2/72x72/1f36b.png" width="40"> ksoftapi.sk
->>>>>>> 2d50ed97887b71652a3fa27db5a321004ad544fb
 A wrapper for api.ksoft.si made in Skript.
 
 ## Required Plugins:
