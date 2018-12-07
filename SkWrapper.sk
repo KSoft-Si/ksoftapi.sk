@@ -9,6 +9,20 @@ function url(url: text) :: text:
 	replace all "§" with "&" in {_url}
 	return {_url}
 
+on skript load:
+	send a request to url("https://bot.ender.site/v4/latest/skwrapper") with headers "User-Agent: Skript" and "Content-Type: application/json"
+	map json last response's body to {_latest::*}
+	set {_ver} to "{@version}"
+	if {_ver} is {_latest::*}:
+		send "<red>An unexpected error occoured. The version was missing from your file." to console
+		send "<red>The latest release is %{_latest::*}%, but you are running %{_ver}%." to console
+		send "<red>Please re-download the lastest release from https://github.com/EnderDev/ksoftapi.sk/releases/" to console
+		execute console command "/stop"
+	if {_ver} is {_latest::*}:
+		send "<green>Successfully loaded SkWrapper" to console
+		send "<green>If you experience any issues, please report it on https://github.com/EnderDev/ksoftapi.sk/issues" to console
+
+
 #---------------------------------------------------------------------------------------------------
 #				            Random-Meme
 #		         This is the section that contains all random-meme code
@@ -249,6 +263,42 @@ expression last randreddit (author|user): # returns the author of the post in th
 		return {randreddit::author}
 
 #---------------------------------------------------------------------------------------------------
+#				            Random WikiHow Post
+#		         This is the section that contains all random wikihow code
+#----------------------------------------------------------------------------------------------------
+
+effect (get|generate) random post from wikihow[ with nsfw %-boolean%]:
+	trigger:
+		delete {randwh::*}
+		if expression-2 is not set:
+			set {_nsfw} to false
+		else:
+			set {_nsfw} to expr-2
+		send a request to url("https://api.ksoft.si/images/random-wikihow?nsfw=%{_nsfw}%") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
+		map json last response's body to {_wikihow::*}
+		set {randwh::url} to {_wikihow::url}
+		set {randwh::title} to {_wikihow::title}
+		set {randwh::nsfw} to {_wikihow::nsfw}
+		set {randwh::post} to {_wikihow::article_url}
+
+expression last wikihow (url|link): # returns the image url. handy for using in discord embeds (Discord integration requires Vixio)
+	get:
+		return {randwh::url}
+
+expression last wikihow (title|name): # returns the wikihow post title. #
+	get:
+		return {randwh::title}
+
+expression last wikihow (nsfw|safe): # boolean. is nsfw or not. #
+	get:
+		return {randwh::nsfw}
+
+expression last wikihow (post|article url): # returns the location of the post on wikihow.com #
+	get:
+		return {randwh::url}
+
+
+#---------------------------------------------------------------------------------------------------
 #				            Other Image Related Requests
 #		         This is the section that contains all other image code
 #----------------------------------------------------------------------------------------------------
@@ -257,8 +307,11 @@ effect get all image tags:
 	trigger:
 		send a request to url("https://api.ksoft.si/images/tags") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
 		map json last response's body to {_tags::*}
-		set {_tags} to join {_tags::tags} by ", "
-		return {_tags}
+		set {ksofttags::*} to join {_tags::tags} by ", "
+
+expression all image tags:
+	get:
+		return {ksofttags::*}
 
 effect get image from (id|snowflake) %string%:
 	trigger:
@@ -274,3 +327,20 @@ effect get random cute (image|pic):
 		send a request to url("https://api.ksoft.si/images/random-aww") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
 		map json last response's body to {_image::*}
 		return {_image::image_url}
+
+#---------------------------------------------------------------------------------------------------
+#				            Simple Ban functions
+#		         This is the section that contains some ban functions
+#----------------------------------------------------------------------------------------------------
+
+effect check ban status for %user%:
+	trigger:
+		send a request to url("https://api.ksoft.si/bans/check?user=%id of expr-1%") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
+		map json last response's body to {_ban::*}
+		return {_ban::is_banned}
+
+effect get ban info for %user%:
+	trigger:
+		send a request to url("https://api.ksoft.si/bans/info?user=%id of expr-1%") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
+		map json last response's body to {_info::*}
+		return {_info::*}
