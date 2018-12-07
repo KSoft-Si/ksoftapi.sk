@@ -70,7 +70,7 @@ expression last randmeme (author|user): # returns the author of the post in the 
 #		         This is the section that contains all lyric search code
 #----------------------------------------------------------------------------------------------------
 
-effect (search|find) lyrics for %string% with text only %boolean%[, clean up %boolean%][(, | and) limit results to %integer%]:
+effect (search|find) lyrics for %string% with text only %boolean%[, clean up %-boolean%][(, | and) limit results to %-integer%]:
 	trigger:
 		delete {lastlyric::*}
 		if expression-2 is false:
