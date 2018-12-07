@@ -273,5 +273,4 @@ effect get random cute (image|pic):
 	trigger:
 		send a request to url("https://api.ksoft.si/images/random-aww") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
 		map json last response's body to {_image::*}
-
 		return {_image::image_url}
