@@ -1,4 +1,4 @@
-# 🍫 ksoftapi.sk
+# <img src="https://twemoji.maxcdn.com/2/72x72/1f36b.png" width="41"> ksoftapi.sk
 A wrapper for api.ksoft.si made in Skript.
 
 ## Required Plugins:
@@ -19,4 +19,3 @@ Created by GamingGeek and EnderDev
 Acknowledgements: K.Soft API & NANI
 
 Big thanks to them! :heart:
-
