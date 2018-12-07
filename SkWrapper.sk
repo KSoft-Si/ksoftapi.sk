@@ -9,7 +9,9 @@ function url(url: text) :: text:
 	replace all "§" with "&" in {_url}
 	return {_url}
 
-on load:
+import:
+	ch.njol.skript.lang.Variable;
+	ch.njol.skript.lang.VariableString;
 	send a request to url("https://api.ksoft.si/images/tags") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
 	map json last response's body to {_tags::*}
 	delete {ksofttags::*}
@@ -289,11 +291,91 @@ expression last wikihow (post|article url): # returns the location of the post o
 	get:
 		return {randwh::url}
 
+#---------------------------------------------------------------------------------------------------
+#				            Kumo Data & Geolocation
+#		         This is the section that contains all Kumo code.
+#----------------------------------------------------------------------------------------------------
+
+effect (search|find) location with query %string%[ is fast %-boolean%][ is more %-boolean%][ and (set|assign) map zoom to %-integer%][ and (includes|has) map %-boolean%]:
+	trigger:
+		delete {lastloc::*}
+		if expression-2 is not set:
+			set {_fast} to true
+		else:
+			set {_fast} to false
+		if expression-3 is not set:
+			set {_more} to false
+		else:
+			set {_more} to true
+		if expression-4 is not set:
+			set {_zoom} to 12
+		else:
+			set {_zoom} to expression-4
+		if expression-5 is not set:
+			set {_map} to false
+		else:
+			set {_map} to true
+		send a request to url("https://api.ksoft.si/kumo/gis?q=%expression-1%&fast=%{_fast}%&more=%{_more}%&map_zoom=%{_zoom}%&include_map=%{_map}%") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
+		map json last response's body to {_kumo::gis::*}
+		set {lastloc::response::error} to {_kumo::gis::error}
+		set {lastloc::response::code} to {_kumo::gis::code}
+		set {lastloc::location::address} to {_kumo::gis::data::address}
+		set {lastloc::location::latitude} to {_kumo::gis::data::lat}
+		set {lastloc::location::longtitude} to {_kumo::gis::data::lon}
+		set {lastloc::location::areabox::*} to {_kumo::gis::data::bounding_box} # This object is special, because it is a list. To specify all points of the area box, use {lastloc::location::areabox::1}, {lastloc::location::areabox::2} etc. #
+		set {lastloc::location::type::*} to {_kumo::gis::data::type} # Same as above #
+		set {lastloc::location::map} to {_kumo::gis::data::map}
+
+expression last gis error: # true or false, weather an error occoured #
+	get:
+		return {lastloc::response::error}
+
+expression last gis (status|code|http code): # returns the status code. 200 for success, others may be errors. #
+	get:
+		return {lastloc::response::code}
+
+expression last gis (location|address): # returns the location of the gis search #
+	get:
+		return {lastloc::response::address}
+
+expression last gis (latitude|lat): # returns the latitude of the gis location #
+	get:
+		return {lastloc::location::latitude}
+
+expression last gis (longtitude|lon): # returns the longtitude of the gis location #
+	get:
+		return {lastloc::location::longtitude}
+
+expression last gis (area|box|area box) with id %-integer%: # returns the area box location which you specified. #
+	get:
+		if expression-1 is greater than size of {lastloc::location::areabox::*}:
+			return "Value must be less than %size of {lastloc::location::areabox::*}%"
+		else:
+			return {lastloc::location::areabox::%expression-1%}
+
+expression last gis (type|monuments|areas of interest|aoi) with id %-integer%: # returns the area of interest which you specified #
+	get:
+		if expression-1 is greater than size of {lastloc::location::type::*}:
+			return "Value must be less than %size of {lastloc::location::type::*}%"
+		else:
+			return {lastloc::location::type::%expression-1%}
+
+expression last gis (map|location map): # returns the map of the gis location #
+	get:
+		return {lastloc::location::map}
+
 
 #---------------------------------------------------------------------------------------------------
 #				            Other Image Related Requests
 #		         This is the section that contains all other image code
 #----------------------------------------------------------------------------------------------------
+
+effect testing and add to %listvariable%:
+	trigger:
+		broadcast "oof"
+		add "oof" to expr-1
+		add "yeet" to expr-1
+		broadcast expr-1
 
 expression all image tags:
 	get:
@@ -323,10 +405,9 @@ effect check ban status for %user%:
 	trigger:
 		send a request to url("https://api.ksoft.si/bans/check?user=%id of expr-1%") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
 		map json last response's body to {_ban::*}
-		return {_ban::is_banned}
+		delete {bancheck}
+		set {bancheck} to {_ban::is_banned}
 
-effect get ban info for %user%:
-	trigger:
-		send a request to url("https://api.ksoft.si/bans/info?user=%id of expr-1%") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
-		map json last response's body to {_info::*}
-		return {_info::*}
+expression last ban status:
+	get:
+		return {bancheck}
