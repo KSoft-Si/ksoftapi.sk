@@ -155,7 +155,7 @@ expression last wikihow (nsfw|safe): # boolean. is nsfw or not. #
 
 expression last wikihow (post|article url): # returns the location of the post on wikihow.com #
 	get:
-		return {randwh::url}
+		return {randwh::article_url}
 
 #---------------------------------------------------------------------------------------------------
 #				            Kumo Data & Geolocation
