@@ -34,56 +34,23 @@ on load:
 #		         This is the section that contains all random-meme code
 #----------------------------------------------------------------------------------------------------
 
-effect (get|generate) random meme:
+effect (get|generate) random meme and store it in %objects%: #e.g. 'get random meme and store it in {_meme::*}' would make '{_meme::img}' the image url
 	trigger:
-		delete {randmeme::*}
 		send a request to url("https://api.ksoft.si/meme/random-meme") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
 		map json last response's body to {_meme::*}
-		set {randmeme::img} to {_meme::image_url}
-		set {randmeme::title} to {_meme::title}
-		set {randmeme::source} to {_meme::source}
-		set {randmeme::subreddit} to {_meme::subreddit}
-		set {randmeme::upvotes} to {_meme::upvotes}
-		set {randmeme::downvotes} to {_meme::downvotes}
-		set {randmeme::comments} to {_meme::comments}
-		set {randmeme::nsfw} to {_meme::nsfw}
-		set {randmeme::author} to {_meme::author}
-
-expression last randmeme (img|image): # returns the image url. handy for using in discord embeds (Discord integration requires Vixio)
-	get:
-		return {randmeme::img}
-
-expression last randmeme (title|name): # returns the meme title. #
-	get:
-		return {randmeme::title}
-
-expression last randmeme (url|link): # source of the post. always starts with https://reddit.com #
-	get:
-		return {randmeme::source}
-
-expression last randmeme (subreddit|reddit): # returns the subreddits of the post #
-	get:
-		return {randmeme::subreddit}
-
-expression last randmeme (upvotes|likes): # returns the upvotes/likes of a post #
-	get:
-		return {randmeme::upvotes}
-
-expression last randmeme (downvotes|dislikes): # returns the downvotes/dislikes #
-	get:
-		return {randmeme::downvotes}
-
-expression last randmeme (comments|replies): # returns the amount of comments, not the comments
-	get:
-		return {randmeme::comments}
-
-expression last randmeme (nsfw state|nsfw|nsfw status): # returns a boolean (true/false), not a string ("true"/"false")
-	get:
-		return {randmeme::nsfw}
-
-expression last randmeme (author|user): # returns the author of the post in the form of "u/username"
-	get:
-		return {randmeme::author}
+		set {_v} to "%raw expression 1%"
+        if {_v} doesn't contain "::*":
+            stop #Must be a list variable
+        replace all "{", "::*" and "}" in {_v} with ""
+		set {%{_v}%::img} to {_meme::image_url}
+		set {%{_v}%::title} to {_meme::title}
+		set {%{_v}%::source} to {_meme::source}
+		set {%{_v}%::subreddit} to {_meme::subreddit}
+		set {%{_v}%::upvotes} to {_meme::upvotes}
+		set {%{_v}%::downvotes} to {_meme::downvotes}
+		set {%{_v}%::comments} to {_meme::comments}
+		set {%{_v}%::nsfw} to {_meme::nsfw}
+		set {%{_v}%::author} to {_meme::author}
 
 #---------------------------------------------------------------------------------------------------
 #				            Lyric Search
@@ -409,8 +376,5 @@ effect get random data and store it in %objects%:
         set {_v} to "%raw expression 1%"
         if {_v} doesn't contain "::*":
             stop #Must be a list variable
-        if {%{_v}%} is set:
-            delete {%{_v}%}
-        else:
-            replace all "{", "::*" and "}" in {_v} with ""
-            set {%{_v}%::*} to {_test::*}
+        replace all "{", "::*" and "}" in {_v} with ""
+        set {%{_v}%::*} to {_test::*}
