@@ -65,11 +65,11 @@ effect (search|find) lyrics for %string% and store it in %objects% [using option
 		if expression-3 is true:
 			set {_tonly} to true
 		if expression-4 is set:
-			set {_clean} to expression-3
+			set {_clean} to expression-4
 		if expression-5 is not set:
 			set {_limit} to 10
 		else:
-			set {_limit} to expression-3
+			set {_limit} to expression-4
 		send a request to url("https://api.ksoft.si/lyrics/search?q=%expression-1%&text_only=%{_tonly}%&limit=%{_limit}%&clean_up=%{_clean}%") with headers "User-Agent: Skript", "Accept: application/json" and "Authorization: {@token}"
 		map json last response's body to {_lyrics::*}
 		set {_v} to "%raw expression 2%"
@@ -95,64 +95,32 @@ effect (search|find) lyrics for %string% and store it in %objects% [using option
 #		         This is the section that contains all subreddit meme code
 #----------------------------------------------------------------------------------------------------
 
-effect (get|generate) random meme from subreddit %string%[ with nsfw %-boolean%][ (and|with) span %-string%]: #Expression 3 (Span) should be "hour", "day", "week", "month" or "year" or excluded for all
+effect (get|generate) random meme from subreddit %string% and store it in %objects% [using options][ nsfw %-boolean%][ (, |and) span %-string%]: #Expression 4 (Span) should be "hour", "day", "week", "month" or "year" or excluded for all
 	trigger:
 		delete {randreddit::*}
-		if expression-2 is not set:
+		if expression-3 is not set:
 			set {_nsfw} to false
 		else:
-			set {_nsfw} to expr-2
-		if expression-3 is not set:
+			set {_nsfw} to expr-3
+		if expression-4 is not set:
 			set {_span} to "all"
 		else:
-			set {_span} to expr-3
+			set {_span} to expr-4
 		send a request to url("https://api.ksoft.si/images/rand-reddit/%expr-1%?remove_nsfw=%{_nsfw}%&span=%{_span}%") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
 		map json last response's body to {_meme::*}
-		set {randreddit::img} to {_meme::image_url}
-		set {randreddit::title} to {_meme::title}
-		set {randreddit::source} to {_meme::source}
-		set {randreddit::subreddit} to {_meme::subreddit}
-		set {randreddit::upvotes} to {_meme::upvotes}
-		set {randreddit::downvotes} to {_meme::downvotes}
-		set {randreddit::comments} to {_meme::comments}
-		set {randreddit::nsfw} to {_meme::nsfw}
-		set {randreddit::author} to {_meme::author}
-
-expression last randreddit (img|image): # returns the image url. handy for using in discord embeds (Discord integration requires Vixio)
-	get:
-		return {randreddit::img}
-
-expression last randreddit (title|name): # returns the meme title. #
-	get:
-		return {randreddit::title}
-
-expression last randreddit (url|link): # source of the post. always starts with https://reddit.com #
-	get:
-		return {randreddit::source}
-
-expression last randreddit (subreddit|reddit): # returns the subreddits of the post #
-	get:
-		return {randreddit::subreddit}
-
-expression last randreddit (upvotes|likes): # returns the upvotes/likes of a post #
-	get:
-		return {randreddit::upvotes}
-
-expression last randreddit (downvotes|dislikes): # returns the downvotes/dislikes #
-	get:
-		return {randreddit::downvotes}
-
-expression last randreddit (comments|replies): # returns the amount of comments, not the comments
-	get:
-		return {randreddit::comments}
-
-expression last randreddit (nsfw state|nsfw|nsfw status): # returns a boolean (true/false), not a string ("true"/"false")
-	get:
-		return {randreddit::nsfw}
-
-expression last randreddit (author|user): # returns the author of the post in the form of "u/username"
-	get:
-		return {randreddit::author}
+		set {_v} to "%raw expression 2%"
+        if {_v} doesn't contain "::*":
+            stop #Must be a list variable
+        replace all "{", "::*" and "}" in {_v} with ""
+		set {%{_v}%::img} to {_meme::image_url}
+		set {%{_v}%::title} to {_meme::title}
+		set {%{_v}%::source} to {_meme::source}
+		set {%{_v}%::subreddit} to {_meme::subreddit}
+		set {%{_v}%::upvotes} to {_meme::upvotes}
+		set {%{_v}%::downvotes} to {_meme::downvotes}
+		set {%{_v}%::comments} to {_meme::comments}
+		set {%{_v}%::nsfw} to {_meme::nsfw}
+		set {%{_v}%::author} to {_meme::author}
 
 #---------------------------------------------------------------------------------------------------
 #				            Random WikiHow Post
