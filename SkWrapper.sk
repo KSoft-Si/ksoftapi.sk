@@ -127,35 +127,23 @@ effect (get|generate) random meme from subreddit %string% and store it in %objec
 #		         This is the section that contains all random wikihow code
 #----------------------------------------------------------------------------------------------------
 
-effect (get|generate) random post from wikihow[ with nsfw %-boolean%]:
+effect (get|generate) random post from wikihow and store it in %objects%[ with nsfw %-boolean%]:
 	trigger:
-		delete {randwh::*}
+		delete {%{_v}%::*}
 		if expression-2 is not set:
 			set {_nsfw} to false
 		else:
 			set {_nsfw} to expr-2
 		send a request to url("https://api.ksoft.si/images/random-wikihow?nsfw=%{_nsfw}%") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
 		map json last response's body to {_wikihow::*}
-		set {randwh::url} to {_wikihow::url}
-		set {randwh::title} to {_wikihow::title}
-		set {randwh::nsfw} to {_wikihow::nsfw}
-		set {randwh::post} to {_wikihow::article_url}
-
-expression last wikihow (url|link): # returns the image url. handy for using in discord embeds (Discord integration requires Vixio)
-	get:
-		return {randwh::url}
-
-expression last wikihow (title|name): # returns the wikihow post title. #
-	get:
-		return {randwh::title}
-
-expression last wikihow (nsfw|safe): # boolean. is nsfw or not. #
-	get:
-		return {randwh::nsfw}
-
-expression last wikihow (post|article url): # returns the location of the post on wikihow.com #
-	get:
-		return {randwh::article_url}
+		set {_v} to "%raw expression 1%"
+        if {_v} doesn't contain "::*":
+            stop #Must be a list variable
+        replace all "{", "::*" and "}" in {_v} with ""
+		set {%{_v}%::url} to {_wikihow::url}
+		set {%{_v}%::title} to {_wikihow::title}
+		set {%{_v}%::nsfw} to {_wikihow::nsfw}
+		set {%{_v}%::post} to {_wikihow::article_url}
 
 #---------------------------------------------------------------------------------------------------
 #				            Kumo Data & Geolocation
