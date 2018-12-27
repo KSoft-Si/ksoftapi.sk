@@ -1,4 +1,4 @@
-# ksoftapi.sk
+# <img src="https://twemoji.maxcdn.com/2/72x72/1f36b.png" width="40"> ksoftapi.sk
 A wrapper for api.ksoft.si made in Skript.
 
 ## Required Plugins:
