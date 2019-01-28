@@ -5,7 +5,7 @@ A wrapper for api.ksoft.si made in Skript.
 
 * Reqn - https://github.com/btk5h/reqn (for sending a request to the api)
 * Skript-Json - https://github.com/btk5h/skript-json (for making the json from the api into a list variable)
-* Skript-Mirror - https://github.com/btk5h/skript-mirror/releases
+* Skript-Mirror - https://github.com/btk5h/skript-mirror/releases (for custom effects and expressions)
 * SkUtilities - https://github.com/tim740/skUtilities/releases/tag/v0.9.2 (for unix to date conversions)
 
 ## Skript download
@@ -16,6 +16,11 @@ A wrapper for api.ksoft.si made in Skript.
 
 Created by GamingGeek and EnderDev
 
-Acknowledgements: K.Soft API & NANI
+Acknowledgements: 
+• NANI(@AndyTempel) for creating the KSoft.Si API
+• Njol for creating skript & Bensku for the updated fork
+• (@btk5h) for many of the addons used (reqn, skript-json & skript-mirror)
+• @tim740 for creation skUtilities
+• Blitz(@iBlitzkriegi) for making vixio, the addon used for most examples
 
 Big thanks to them!
