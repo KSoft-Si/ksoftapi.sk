@@ -4,7 +4,7 @@ about: Create a report to help us improve. This issue template is strictly used 
   errors in our code,  purely related to Skript or another add-on conflict.
 title: ''
 labels: bug
-assignees: GamingGeek, HVEVB, EnderDev
+assignees: GamingGeek, EnderDev
 
 ---
 
