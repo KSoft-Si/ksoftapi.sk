@@ -1,6 +1,6 @@
 # The KSoft.Si API is primarily for discord bots, therefore most examples will use Vixio (discord integration for Skript)
 
-# Random Meme (Example uses Vixio 2!)
+## Random Meme (Example uses Vixio 2!)
 
 ```
 discord command !meme:
@@ -27,7 +27,7 @@ This example is using Vixio 2, it will display an embed with a title, the subred
 
 Thanks to GamingGeek for this example.
 
-# Search for Lyrics (Example uses Vixio 2!)
+## Search for Lyrics (Example uses Vixio 2!)
 
 ```
 discord command !lyrics <string>:
