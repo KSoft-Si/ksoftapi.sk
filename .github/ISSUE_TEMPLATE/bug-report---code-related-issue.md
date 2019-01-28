@@ -1,7 +1,7 @@
 ---
-name: 'Bug report - K.Soft Related Issue '
+name: Bug report - Code Related Issue
 about: Create a report to help us improve. This issue template is strictly used for
-  K.Soft errors in our code.
+  errors in our code,  purely related to Skript or another add-on conflict.
 title: ''
 labels: bug
 assignees: GamingGeek, HVEVB, EnderDev
@@ -24,8 +24,8 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**K.Soft Docs Page**
- - Not required,  but may be helpful.
+**Console Logs**
+Required and will help us identify the issue.
 
 **Additional context**
 Add any other context about the problem here.
