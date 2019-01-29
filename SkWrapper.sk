@@ -247,7 +247,7 @@ expression last ban status:
 	get:
 		return {bancheck}
 
-#Functioning variable storing
+#Functioning variable storing. wait nvm it's a big scam
 effect get random data and store it in %objects%:
     trigger:
         add "this", "is", "some", "random" and "data" to {_test::*}
