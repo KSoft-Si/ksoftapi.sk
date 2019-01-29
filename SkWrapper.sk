@@ -20,6 +20,24 @@ import:
 	ch.njol.skript.lang.util.SimpleLiteral
 	ch.njol.skript.variables.Variables
 
+	org.bukkit.Bukkit
+
+# Stuff taken from imagesk for errors and warnings#
+
+on load:
+	set {ksoftapi::Logger} to Bukkit.getServer().getLogger() # for warn/error #
+
+local effect [(1¦parse)] error %string%:
+	trigger:
+		if parse mark is 1:
+			Skript.error(expression-1)
+		else:
+			{ksoftapi::Logger}.severe("[ksoftapi] %expression-1%")
+
+local effect warning %string%:
+	trigger:
+		{ksoftapi::Logger}.warning("[ksoftapi] %expression-1%")
+
 local effect set variable %-objects% to %-objects% in %event%:
 	trigger:
 		set {_variable} to expression-1
@@ -42,9 +60,11 @@ effect (get|generate) random meme and store it in %objects%: #e.g. 'get random m
 		send a request to url("https://api.ksoft.si/meme/random-meme") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
 		map json last response's body to {_meme::*}
 		set {_v} to "%raw expression 1%"
-        if {_v} doesn't contain "::*":
-            stop #Must be a list variable
-        replace all "{", "::*" and "}" in {_v} with ""
+		if {_v} doesn't contain "::*":
+			parse error "%raw expression 1% is not a list variable"
+			stop #Must be a list variable
+		replace all "{", "::*" and "}" in {_v} with ""
+		delete {%{_v}%::*}
 		set {%{_v}%::img} to {_meme::image_url}
 		set {%{_v}%::title} to {_meme::title}
 		set {%{_v}%::source} to {_meme::source}
@@ -60,25 +80,28 @@ effect (get|generate) random meme and store it in %objects%: #e.g. 'get random m
 #		         This is the section that contains all lyric search code
 #----------------------------------------------------------------------------------------------------
 
-effect (search|find) lyrics for %string% and store it in %objects% [using options][ text only %boolean%[(, |and) clean up %-boolean%][(, | and) limit results to %-integer%]:
+effect (search|find) lyrics for %string% and store them in %objects% using options text only %boolean%[(, |and) clean up %-boolean%][(, | and) limit results to %-integer%]:
 	trigger:
-		delete {lastlyric::*}
 		if expression-3 is false:
 			set {_tonly} to false
 		if expression-3 is true:
 			set {_tonly} to true
 		if expression-4 is set:
 			set {_clean} to expression-4
+		else:
+			set {_clean} to false
 		if expression-5 is not set:
 			set {_limit} to 10
 		else:
 			set {_limit} to expression-4
-		send a request to url("https://api.ksoft.si/lyrics/search?q=%expression-1%&text_only=%{_tonly}%&limit=%{_limit}%&clean_up=%{_clean}%") with headers "User-Agent: Skript", "Accept: application/json" and "Authorization: {@token}"
+		send a request to url("https://api.ksoft.si/lyrics/search?q=%url safe expression-1%&text_only=%{_tonly}%&limit=%{_limit}%&clean_up=%{_clean}%") with headers "User-Agent: Skript", "Accept: application/json" and "Authorization: {@token}"
 		map json last response's body to {_lyrics::*}
 		set {_v} to "%raw expression 2%"
-        if {_v} doesn't contain "::*":
-            stop #Must be a list variable
-        replace all "{", "::*" and "}" in {_v} with ""
+		if {_v} doesn't contain "::*":
+			parse error "%raw expression 2% is not a list variable"
+			stop #Must be a list variable
+		replace all "{", "::*" and "}" in {_v} with ""
+		delete {%{_v}%::*}
 		set {%{_v}%::total} to {_lyrics::total}
 		set {%{_v}%::took} to {_lyrics::took}
 		loop {_limit} times:
@@ -100,7 +123,6 @@ effect (search|find) lyrics for %string% and store it in %objects% [using option
 
 effect (get|generate) random meme from subreddit %string% and store it in %objects% [using options][ nsfw %-boolean%][ (, |and) span %-string%]: #Expression 4 (Span) should be "hour", "day", "week", "month" or "year" or excluded for all
 	trigger:
-		delete {randreddit::*}
 		if expression-3 is not set:
 			set {_nsfw} to false
 		else:
@@ -112,9 +134,11 @@ effect (get|generate) random meme from subreddit %string% and store it in %objec
 		send a request to url("https://api.ksoft.si/images/rand-reddit/%expr-1%?remove_nsfw=%{_nsfw}%&span=%{_span}%") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
 		map json last response's body to {_meme::*}
 		set {_v} to "%raw expression 2%"
-        if {_v} doesn't contain "::*":
-            stop #Must be a list variable
-        replace all "{", "::*" and "}" in {_v} with ""
+		if {_v} doesn't contain "::*":
+			parse error "%raw expression 2% is not a list variable"
+			stop #Must be a list variable
+		replace all "{", "::*" and "}" in {_v} with ""
+		delete {%{_v}%::*}
 		set {%{_v}%::img} to {_meme::image_url}
 		set {%{_v}%::title} to {_meme::title}
 		set {%{_v}%::source} to {_meme::source}
@@ -132,7 +156,6 @@ effect (get|generate) random meme from subreddit %string% and store it in %objec
 
 effect (get|generate) random post from wikihow and store it in %objects%[ with nsfw %-boolean%]:
 	trigger:
-		delete {%{_v}%::*}
 		if expression-2 is not set:
 			set {_nsfw} to false
 		else:
@@ -140,9 +163,11 @@ effect (get|generate) random post from wikihow and store it in %objects%[ with n
 		send a request to url("https://api.ksoft.si/images/random-wikihow?nsfw=%{_nsfw}%") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
 		map json last response's body to {_wikihow::*}
 		set {_v} to "%raw expression 1%"
-        if {_v} doesn't contain "::*":
-            stop #Must be a list variable
-        replace all "{", "::*" and "}" in {_v} with ""
+		if {_v} doesn't contain "::*":
+			parse error "%raw expression 1% is not a list variable"
+			stop #Must be a list variable
+		replace all "{", "::*" and "}" in {_v} with ""
+		delete {%{_v}%::*}
 		set {%{_v}%::url} to {_wikihow::url}
 		set {%{_v}%::title} to {_wikihow::title}
 		set {%{_v}%::nsfw} to {_wikihow::nsfw}
@@ -152,6 +177,8 @@ effect (get|generate) random post from wikihow and store it in %objects%[ with n
 #				            Kumo Data & Geolocation
 #		         This is the section that contains all Kumo code.
 #----------------------------------------------------------------------------------------------------
+
+#TODO Make Kumo use variable storage system and better syntax
 
 effect (search|find) location with query %string%[ is fast %-boolean%][ is more %-boolean%][ and (set|assign) map zoom to %-integer%][ and (includes|has) map %-boolean%]:
 	trigger:
@@ -203,7 +230,7 @@ expression last gis (longtitude|lon): # returns the longtitude of the gis locati
 	get:
 		return {lastloc::location::longtitude}
 
-expression last gis (area|box|area box) with id %-integer%: # returns the area box location which you specified. #
+expression last gis (area|box|area box) with id %-integer%: # returns the area box location which you specified. NOTE: i think this is broken so will fix soon#
 	get:
 		if expression-1 is greater than size of {lastloc::location::areabox::*}:
 			return "Value must be less than %size of {lastloc::location::areabox::*}%"
@@ -249,10 +276,11 @@ expression last ban status:
 
 #Functioning variable storing. wait nvm it's a big scam
 effect get random data and store it in %objects%:
-    trigger:
-        add "this", "is", "some", "random" and "data" to {_test::*}
-        set {_v} to "%raw expression 1%"
-        if {_v} doesn't contain "::*":
-            stop #Must be a list variable
-        replace all "{", "::*" and "}" in {_v} with ""
-        set {%{_v}%::*} to {_test::*}
+	trigger:
+		add "this", "is", "some", "random" and "data" to {_test::*}
+		set {_v} to "%raw expression 1%"
+		if {_v} doesn't contain "::*":
+			parse error "%raw expression 1% is not a list variable"
+			stop #Must be a list variable
+		replace all "{", "::*" and "}" in {_v} with ""
+		set {%{_v}%::*} to {_test::*}
