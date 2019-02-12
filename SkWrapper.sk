@@ -5,7 +5,7 @@
 # Acknowledgements: K.Soft API & NANI #
 
 options:
-	token: token XXXXXXXXXXXXXXXXXXXXXXXXXX # <-- You would enter your K.Soft API token here. You can get one by submitting an application to: https://api.ksoft.si/dashboard/ #
+	token: token XXXXXXXXXXXXXXXXXXXXXXXXXXXXX # <-- You would enter your K.Soft API token here. You can get one by submitting an application to: https://api.ksoft.si/dashboard/ #
 	lyricerror: No lyrics found for that search query!
 
 function url(url: text) :: text:
@@ -22,7 +22,7 @@ import:
 
 	org.bukkit.Bukkit
 
-# Stuff taken from imagesk for errors and warnings#
+# Stuff taken from imagesk for errors and warnings #
 
 on load:
 	set {ksoftapi::Logger} to Bukkit.getServer().getLogger() # for warn/error #
@@ -44,11 +44,12 @@ local effect set variable %-objects% to %-objects% in %event%:
 		set {_name} to {_variable}.getName().toString(expression-3)
 		Variables.setVariable({_name}, expression-2, expression-3, {_variable}.isLocal())
 
-on load:
-	send a request to url("https://api.ksoft.si/images/tags") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
-	map json last response's body to {_tags::*}
-	delete {ksofttags::*}
-	set {ksofttags::*} to join {_tags::tags::*} by ", "
+effect retrieve image tags: # Use this to retrieve the latest list of available tags. You can use the `all image tags` experession to get the list
+	trigger:
+		send a request to url("https://api.ksoft.si/images/tags") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
+		map json last response's body to {_tags::*}
+		delete {ksofttags::*}
+		set {ksofttags::*} to join {_tags::tags::*} by ", "
 
 #---------------------------------------------------------------------------------------------------
 #				            Random-Meme
@@ -74,47 +75,6 @@ effect (get|generate) random meme and store it in %objects%: #e.g. 'get random m
 		set {%{_v}%::comments} to {_meme::comments}
 		set {%{_v}%::nsfw} to {_meme::nsfw}
 		set {%{_v}%::author} to {_meme::author}
-
-#---------------------------------------------------------------------------------------------------
-#				            Lyric Search
-#		         This is the section that contains all lyric search code
-#----------------------------------------------------------------------------------------------------
-
-effect (search|find) lyrics for %string% and store them in %objects% using options text only %boolean%[(, |and) clean up %-boolean%][(, | and) limit results to %-integer%]:
-	trigger:
-		if expression-3 is false:
-			set {_tonly} to false
-		if expression-3 is true:
-			set {_tonly} to true
-		if expression-4 is set:
-			set {_clean} to expression-4
-		else:
-			set {_clean} to false
-		if expression-5 is not set:
-			set {_limit} to 10
-		else:
-			set {_limit} to expression-4
-		send a request to url("https://api.ksoft.si/lyrics/search?q=%url safe expression-1%&text_only=%{_tonly}%&limit=%{_limit}%&clean_up=%{_clean}%") with headers "User-Agent: Skript", "Accept: application/json" and "Authorization: {@token}"
-		map json last response's body to {_lyrics::*}
-		set {_v} to "%raw expression 2%"
-		if {_v} doesn't contain "::*":
-			parse error "%raw expression 2% is not a list variable"
-			stop #Must be a list variable
-		replace all "{", "::*" and "}" in {_v} with ""
-		delete {%{_v}%::*}
-		set {%{_v}%::total} to {_lyrics::total}
-		set {%{_v}%::took} to {_lyrics::took}
-		loop {_limit} times:
-			set {%{_v}%::artist::%loop-value%} to {_lyrics::data::%loop-value%::artist}
-			set {%{_v}%::artist_id::%loop-value%} to {_lyrics::data::%loop-value%::artist_id}
-			set {%{_v}%::album::%loop-value%} to {_lyrics::data::%loop-value%::album}
-			set {%{_v}%::album_id::%loop-value%} to {_lyrics::data::%loop-value%::album_ids}
-			set {%{_v}%::album_year::%loop-value%} to {_lyrics::data::%loop-value%::album_year}
-			set {%{_v}%::tracktitle::%loop-value%} to {_lyrics::data::%loop-value%::name}
-			set {%{_v}%::tracklyrics::%loop-value%} to {_lyrics::data::%loop-value%::lyrics}
-			set {%{_v}%::search_query::%loop-value%} to {_lyrics::data::%loop-value%::search_str}
-			set {%{_v}%::trackid::%loop-value%} to {_lyrics::data::%loop-value%::id}
-			set {%{_v}%::query_score::%loop-value%} to {_lyrics::data::%loop-value%::search_score}
 
 #---------------------------------------------------------------------------------------------------
 #				            Random-Meme-from-Subreddit
@@ -168,10 +128,103 @@ effect (get|generate) random post from wikihow and store it in %objects%[ with n
 			stop #Must be a list variable
 		replace all "{", "::*" and "}" in {_v} with ""
 		delete {%{_v}%::*}
-		set {%{_v}%::url} to {_wikihow::url}
+		set {%{_v}%::img} to {_wikihow::url}
 		set {%{_v}%::title} to {_wikihow::title}
 		set {%{_v}%::nsfw} to {_wikihow::nsfw}
 		set {%{_v}%::post} to {_wikihow::article_url}
+
+#---------------------------------------------------------------------------------------------------
+#				            Image from Tag
+#		         This is the section that contains all image tags code
+#----------------------------------------------------------------------------------------------------
+
+effect get random image from tag %string% and store it in %objects%[ with nsfw %-boolean%]: #e.g. 'get random meme and store it in {_meme::*}' would make '{_meme::img}' the image url
+	trigger:
+		if expression-3 is not set:
+			set {_nsfw} to false
+		else:
+			set {_nsfw} to expr-3
+		send a request to url("https://api.ksoft.si/images/random-image?tag=%expr-1%&nsfw=%{_nsfw}%") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
+		map json last response's body to {_img::*}
+		if {_img::tag} is not expr-1:
+			warning "Reqn does not seem to be giving the correct response. Any requests made may return incorrect data and you have have to repeat them."
+		set {_v} to "%raw expression 2%"
+		if {_v} doesn't contain "::*":
+			parse error "%raw expression 2% is not a list variable"
+			stop #Must be a list variable
+		replace all "{", "::*" and "}" in {_v} with ""
+		delete {%{_v}%::*}
+		set {%{_v}%::img} to {_img::url}
+		set {%{_v}%::snowflake} to {_img::snowflake} #blitz (inside joke)
+		set {%{_v}%::nsfw} to {_img::nsfw}
+		set {%{_v}%::tag} to expr-1
+
+#---------------------------------------------------------------------------------------------------
+#			       	            Random Awwww
+#		     This is the section that contains all random cute picture code
+#----------------------------------------------------------------------------------------------------
+
+
+effect (get|generate) a random cute picture and store it in %objects%: #e.g. 'get random meme and store it in {_meme::*}' would make '{_meme::img}' the image url
+	trigger:
+		send a request to url("https://api.ksoft.si/images/random-aww") with headers "User-Agent: Skript", "Content-Type: application/json" and "Authorization: {@token}"
+		map json last response's body to {_meme::*}
+		set {_v} to "%raw expression 1%"
+		if {_v} doesn't contain "::*":
+			parse error "%raw expression 1% is not a list variable"
+			stop #Must be a list variable
+		replace all "{", "::*" and "}" in {_v} with ""
+		delete {%{_v}%::*}
+		set {%{_v}%::img} to {_meme::image_url}
+		set {%{_v}%::title} to {_meme::title}
+		set {%{_v}%::source} to {_meme::source}
+		set {%{_v}%::subreddit} to {_meme::subreddit}
+		set {%{_v}%::upvotes} to {_meme::upvotes}
+		set {%{_v}%::downvotes} to {_meme::downvotes}
+		set {%{_v}%::comments} to {_meme::comments}
+		set {%{_v}%::nsfw} to {_meme::nsfw}
+		set {%{_v}%::author} to {_meme::author}
+
+#---------------------------------------------------------------------------------------------------
+#				            Lyric Search
+#		         This is the section that contains all lyric search code
+#----------------------------------------------------------------------------------------------------
+
+effect (search|find) lyrics for %string% and store them in %objects% using options text only %boolean%[(, |and) clean up %-boolean%][(, | and) limit results to %-integer%]:
+	trigger:
+		if expression-3 is false:
+			set {_tonly} to false
+		if expression-3 is true:
+			set {_tonly} to true
+		if expression-4 is set:
+			set {_clean} to expression-4
+		else if expression-4 is not set:
+			set {_clean} to false
+		if expression-5 is set:
+			set {_limit} to expression-5
+		else if expression-5 is not set:
+			set {_limit} to 10
+		send a request to url("https://api.ksoft.si/lyrics/search?q=%url safe expression-1%&text_only=%{_tonly}%&limit=%{_limit}%&clean_up=%{_clean}%") with headers "User-Agent: Skript", "Accept: application/json" and "Authorization: {@token}"
+		map json last response's body to {_lyrics::*}
+		set {_v} to "%raw expression 2%"
+		if {_v} doesn't contain "::*":
+			parse error "%raw expression 2% is not a list variable"
+			stop #Must be a list variable
+		replace all "{", "::*" and "}" in {_v} with ""
+		delete {%{_v}%::*}
+		set {%{_v}%::total} to {_lyrics::total}
+		set {%{_v}%::took} to {_lyrics::took}
+		loop {_limit} times:
+			set {%{_v}%::artist::%loop-value%} to {_lyrics::data::%loop-value%::artist}
+			set {%{_v}%::artist_id::%loop-value%} to {_lyrics::data::%loop-value%::artist_id}
+			set {%{_v}%::album::%loop-value%} to {_lyrics::data::%loop-value%::album}
+			set {%{_v}%::album_id::%loop-value%} to {_lyrics::data::%loop-value%::album_ids}
+			set {%{_v}%::album_year::%loop-value%} to {_lyrics::data::%loop-value%::album_year}
+			set {%{_v}%::tracktitle::%loop-value%} to {_lyrics::data::%loop-value%::name}
+			set {%{_v}%::tracklyrics::%loop-value%} to {_lyrics::data::%loop-value%::lyrics}
+			set {%{_v}%::search_query::%loop-value%} to {_lyrics::data::%loop-value%::search_str}
+			set {%{_v}%::trackid::%loop-value%} to {_lyrics::data::%loop-value%::id}
+			set {%{_v}%::query_score::%loop-value%} to {_lyrics::data::%loop-value%::search_score}
 
 #---------------------------------------------------------------------------------------------------
 #				            Kumo Data & Geolocation
